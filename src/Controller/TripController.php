@@ -19,7 +19,7 @@
             $havanaFerries = new HavanaFerries();
             $tripsResponse = $havanaFerries->getTrips();
 
-            die($tripsResponse['data'][0]->getVesselName());
+            // die($tripsResponse['data'][0]->getVesselName());
 
             $response = new Response();
             $response->setContent( json_encode($tripsResponse) );
