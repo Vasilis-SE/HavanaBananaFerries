@@ -62,18 +62,18 @@
             return $response;
         }
 
-        // public function getPrices() {
-        //     $response = array();
-        //     $client = new Client();
+        public function getPrices() {
+            $response = array();
+            $client = new Client();
             
-        //     try { 
-        //         $havanaTripResp = $client->post($this->_baseUrl.'/prod/prices/havana');
-        //         $response = $havanaTripResp->getBody();
-        //     } catch (RequestException | ClientException | ServerException $e) { // Transfering errors / 400 errors / 500 errors
-        //         return false;
-        //     }
+            try { 
+                $havanaTripResp = $client->post($this->_baseUrl.'/prod/prices/havana');
+                $response = $havanaTripResp->getBody();
+            } catch (RequestException | ClientException | ServerException $e) { // Transfering errors / 400 errors / 500 errors
+                return false;
+            }
 
-        //     return $response;
-        // }
+            return $response;
+        }
 
     }

@@ -38,6 +38,8 @@
                 // Iterate response and convert it to trip class instances
                 $respBody = json_decode((string) $bananaTripResp->getBody(), true);
 
+                die( json_encode($respBody) );
+
             } catch (RequestException | ClientException | ServerException $e) { // Transfering errors / 400 errors / 500 errors
                 return false;
             } catch (ParseException $e) { // Exception that can occure while parsing response from request.
@@ -47,7 +49,26 @@
             return $response;
         }
 
+
         // For prices
-        // https://fat3lw9sr6.execute-api.eu-west-3.amazonaws.com/prod/prices/banana?tripId=1&adults=2
+        // https://fat3lw9sr6.execute-api.eu-west-3.amazonaws.com/prod/prices/banana?tripId=1&adults=2&children=1
+        // - tripId: The id of the trip you want to get prices for
+        // - adults: Number of adult passengers traveling
+        // - children: Number of children or infants traveling
+
+        public function getPrices() {
+            $response = array();
+            $client = new Client();
+            
+            try { 
+                $havanaTripResp = $client->post($this->_baseUrl.'/prod/prices/banana');
+                $response = $havanaTripResp->getBody();
+            } catch (RequestException | ClientException | ServerException $e) { // Transfering errors / 400 errors / 500 errors
+                return false;
+            }
+
+            return $response;
+        }
+
 
     }
