@@ -26,26 +26,36 @@
             $response->setStatusCode(Response::HTTP_OK);
             
             return $response;
-    
-            // $trip = new Trip();
-            // $response = $trip->GetHavanaTrips();
-            // return json_encode($response);
         }
 
         /**
-         * @Route("/trips/havana", name="havana_trips")
+         * @Route("/trips/havanaferries", name="havana_ferries_trips")
          */
         public function getHavanaFerriesTrips(Request $request) {
             $trip = new TripModel();
             $havanaTripsResp = $trip->getHavanaFerriesTrips();
-
-  
+            // die($havanaTripsResp);
             $response = new Response();
-            $response->setContent( $havanaTripsResp->getBody() );
+            $response->setContent( $havanaTripsResp );
             $response->headers->set('Content-Type', 'application/json');
             $response->setStatusCode(Response::HTTP_OK);
             return $response;
-
         }
+
+        /**
+         * @Route("/trips/bananalines", name="banana_lines_trips")
+         */
+        public function getBananaLinesTrips(Request $request) {
+            $trip = new TripModel();
+            $bananaLinesTripsResp = $trip->getBananaLinesTrips();
+
+            $response = new Response();
+            $response->setContent( $bananaLinesTripsResp );
+            $response->headers->set('Content-Type', 'application/json');
+            $response->setStatusCode(Response::HTTP_OK);
+            return $response;
+        }
+
+
 
     }
