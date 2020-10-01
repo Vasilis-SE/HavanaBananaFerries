@@ -37,8 +37,18 @@
 
                 // Iterate response and convert it to trip class instances
                 $respBody = json_decode((string) $bananaTripResp->getBody(), true);
+                foreach ($respBody as $trip) {
+                    $departureDate = "";
+                    $arrivalDate = "";
+                    
+                    // $trip = new TripModel(
+                    //     intval($trip['tripId']),
+                    //     htmlspecialchars($trip['vessel']),
+                    //     $departureDate,
+                    //     $arrivalDate
+                    // );
+                }
 
-                die( json_encode($respBody) );
 
             } catch (RequestException | ClientException | ServerException $e) { // Transfering errors / 400 errors / 500 errors
                 return false;

@@ -46,9 +46,9 @@
                         htmlspecialchars($trip['vesselName']),
                         $departureDate,
                         $arrivalDate,
-                        intval($respBody['prices']['AD']),
-                        intval($respBody['prices']['CH']),
-                        intval($respBody['prices']['IN'])
+                        $this->convertCentsToEuros($respBody['prices']['AD']),
+                        $this->convertCentsToEuros($respBody['prices']['CH']),
+                        $this->convertCentsToEuros($respBody['prices']['IN'])
                     );
 
                     $response['data'][] = $trip;
@@ -60,6 +60,10 @@
             }
 
             return $response;
+        }
+
+        private function convertCentsToEuros($value) {
+            return number_format((floatval($value) / 100), 2);
         }
 
         public function getPrices() {
