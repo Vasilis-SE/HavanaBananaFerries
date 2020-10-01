@@ -37,7 +37,7 @@
             $bananaLines = new BananaLines();
             $tripsResponse = $bananaLines->getTrips();
 
-            // die($tripsResponse['data'][0]->getVesselName());
+            die($tripsResponse['data'][0]->getVesselName());
 
             $response = new Response();
             $response->setContent( json_encode($tripsResponse) );
