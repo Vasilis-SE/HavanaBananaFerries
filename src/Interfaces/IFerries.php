@@ -3,4 +3,5 @@
 
     interface IFerries {
         public function getTrips();
+        public function getPrices();
     }

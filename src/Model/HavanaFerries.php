@@ -22,14 +22,25 @@
             try { 
                 $havanaTripResp = $client->get($this->_baseUrl.'/prod/trips/havana');
                 $response = $havanaTripResp->getBody();
-            } catch (RequestException | ClientException | ServerException $e) { // Transfering errors
+            } catch (RequestException | ClientException | ServerException $e) { // Transfering errors / 400 errors / 500 errors
                 return false;
             }
 
             return $response;
         }
 
+        public function getPrices($requestBody) {
+            $response = array();
+            $client = new Client();
+            
+            try { 
+                $havanaTripResp = $client->post($this->_baseUrl.'/prod/prices/havana');
+                $response = $havanaTripResp->getBody();
+            } catch (RequestException | ClientException | ServerException $e) { // Transfering errors / 400 errors / 500 errors
+                return false;
+            }
 
-
+            return $response;
+        }
 
     }
