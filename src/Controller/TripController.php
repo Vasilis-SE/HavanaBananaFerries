@@ -12,32 +12,23 @@
     class TripController {
 
         /**
+         * Its a test route
          * @Route("/trips/havanaferries", name="havana_ferries_trips")
          */
         public function getHavanaFerriesTrips(Request $request) {
             $havanaFerries = new HavanaFerries();
             $tripsResponse = $havanaFerries->getTrips();
 
+            die($tripsResponse['data'][0]->getVesselName());
+
             $response = new Response();
-            $response->setContent( $tripsResponse );
+            $response->setContent( json_encode($tripsResponse) );
             $response->headers->set('Content-Type', 'application/json');
             $response->setStatusCode(Response::HTTP_OK);
             return $response;
         }
 
-        /**
-         * @Route("/trips/bananalines", name="banana_lines_trips")
-         */
-        public function getBananaLinesTrips(Request $request) {
-            // $trip = new TripModel();
-            // $bananaLinesTripsResp = $trip->getBananaLinesTrips();
 
-            // $response = new Response();
-            // $response->setContent( $bananaLinesTripsResp );
-            // $response->headers->set('Content-Type', 'application/json');
-            // $response->setStatusCode(Response::HTTP_OK);
-            // return $response;
-        }
 
 
 
