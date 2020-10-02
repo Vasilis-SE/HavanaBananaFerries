@@ -43,18 +43,23 @@
                     // The arrival date is the departure plus whatever the duration is.
                     $arrivalDate = date('Y-m-d H:i', strtotime('+'.$trip['tripDuration'].' minutes', strtotime($departureDate)));
                
-                    $trip = new TripModel(
-                        intval($trip['tripId']),
-                        htmlspecialchars($trip['vessel']),
-                        $departureDate,
-                        $arrivalDate,
-                        0,
-                        0,
-                        0,
-                        intval($trip['adults']),
-                        intval($trip['children']),
-                        0
-                    );
+                    $trip = new TripModel();
+                    $trip->setItinerary(intval($trip['tripId']));
+                    $trip->setVesselName(htmlspecialchars($trip['vessel']));
+                    $trip->setDepartureDate($departureDate);
+                    $trip->setArrivalDate($arrivalDate);
+                    $trip->setAdultVacancies(intval($trip['adults']));
+                    $trip->setChildVacancies(intval($trip['children']));
+                    $trip->setInfantVacancies($infvc);
+            
+                    // Fetch company & port data from data base
+                    $tripExtraData = $trip->getTripsDataFromDatabase('BananaLines');
+                    if($tripExtraData) {
+                        $trip->setCompanyName($tripExtraData['companyName']);
+                        $trip->setCompanyPrefix($tripExtraData['companyPrefix']);
+                        $trip->setPortOrigin($tripExtraData['portCodeOrigin']);
+                        $trip->setPortDestination($tripExtraData['portCodeDestination']);
+                    }
 
                     $response['data'][] = $trip;
                 }
