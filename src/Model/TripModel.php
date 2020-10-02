@@ -1,6 +1,8 @@
 <?php
     namespace App\Model;
     
+    use App\mocks;
+
     class TripModel {
         private $_itinerary;
         private $_vesselName;
@@ -51,8 +53,8 @@
          * @return Array/Boolean It either returns an array response with the search criteria or false if something went wrong.
          */
         public function getTripsDataFromDatabase($companyKey = "") {
-            if(file_exists('../mocks/tripsDB.json')) {
-                $database = json_decode(file_get_contents('../mocks/tripsDB.json'), true);
+            if(file_exists(dirname(__DIR__, 1).'/mocks/tripsDB.json')) {
+                $database = json_decode(file_get_contents(dirname(__DIR__, 1).'/mocks/tripsDB.json'), true);
                 return array(
                     "companyName"=>$database[ $companyKey ]['name'],
                     "companyPrefix"=>$database[ $companyKey ]['code'],

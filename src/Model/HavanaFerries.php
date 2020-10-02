@@ -24,7 +24,7 @@
         public function getTrips() {
             $response = array();
             $client = new Client();
-            
+           
             try { 
                 // Make the call
                 $havanaTripResp = $client->get($this->_baseUrl.'/prod/trips/havana');
@@ -37,29 +37,30 @@
 
                 // Iterate response and convert it to trip class instances
                 $respBody = json_decode((string) $havanaTripResp->getBody(), true);
+                
                 foreach ($respBody['trips'] as $trip) {
                     $departureDate = substr($trip['date'], 0, 4).'-'.substr($trip['date'], 5, 2).'-'.substr($trip['date'], 7, 2).' '.$trip['departure'];
                     $arrivalDate = substr($trip['date'], 0, 4).'-'.substr($trip['date'], 5, 2).'-'.substr($trip['date'], 7, 2).' '.$trip['arrival'];
 
-                    $trip = new TripModel();
-                    $trip->setItinerary(intval($trip['itinerary']));
-                    $trip->setVesselName(htmlspecialchars($trip['vesselName']));
-                    $trip->setDepartureDate($departureDate);
-                    $trip->setArrivalDate($arrivalDate);
-                    $trip->setAdultPrice($this->convertCentsToEuros($respBody['prices']['AD']));
-                    $trip->setChildPrice($this->convertCentsToEuros($respBody['prices']['CH']));
-                    $trip->setInfantPrice($this->convertCentsToEuros($respBody['prices']['IN']));
-                   
+                    $tripInstance = new TripModel();
+                    $tripInstance->setItinerary(intval($trip['itinerary']));
+                    $tripInstance->setVesselName(htmlspecialchars($trip['vesselName']));
+                    $tripInstance->setDepartureDate($departureDate);
+                    $tripInstance->setArrivalDate($arrivalDate);
+                    $tripInstance->setAdultPrice($this->convertCentsToEuros($respBody['prices']['AD']));
+                    $tripInstance->setChildPrice($this->convertCentsToEuros($respBody['prices']['CH']));
+                    $tripInstance->setInfantPrice($this->convertCentsToEuros($respBody['prices']['IN']));
+                    
                     // Fetch company & port data from data base
-                    $tripExtraData = $trip->getTripsDataFromDatabase('HavanaFerries');
+                    $tripExtraData = $tripInstance->getTripsDataFromDatabase('HavanaFerries');
                     if($tripExtraData) {
-                        $trip->setCompanyName($tripExtraData['companyName']);
-                        $trip->setCompanyPrefix($tripExtraData['companyPrefix']);
-                        $trip->setPortOrigin($tripExtraData['portCodeOrigin']);
-                        $trip->setPortDestination($tripExtraData['portCodeDestination']);
+                        $tripInstance->setCompanyName($tripExtraData['companyName']);
+                        $tripInstance->setCompanyPrefix($tripExtraData['companyPrefix']);
+                        $tripInstance->setPortOrigin($tripExtraData['portCodeOrigin']);
+                        $tripInstance->setPortDestination($tripExtraData['portCodeDestination']);
                     }
 
-                    $response['data'][] = $trip;
+                    $response['data'][] = $tripInstance;
                 }
             } catch (RequestException | ClientException | ServerException $e) { // Transfering errors / 400 errors / 500 errors
                 return false;

@@ -43,25 +43,24 @@
                     // The arrival date is the departure plus whatever the duration is.
                     $arrivalDate = date('Y-m-d H:i', strtotime('+'.$trip['tripDuration'].' minutes', strtotime($departureDate)));
                
-                    $trip = new TripModel();
-                    $trip->setItinerary(intval($trip['tripId']));
-                    $trip->setVesselName(htmlspecialchars($trip['vessel']));
-                    $trip->setDepartureDate($departureDate);
-                    $trip->setArrivalDate($arrivalDate);
-                    $trip->setAdultVacancies(intval($trip['adults']));
-                    $trip->setChildVacancies(intval($trip['children']));
-                    $trip->setInfantVacancies($infvc);
+                    $tripInstance = new TripModel();
+                    $tripInstance->setItinerary(intval($trip['tripId']));
+                    $tripInstance->setVesselName(htmlspecialchars($trip['vessel']));
+                    $tripInstance->setDepartureDate($departureDate);
+                    $tripInstance->setArrivalDate($arrivalDate);
+                    $tripInstance->setAdultVacancies(intval($trip['adults']));
+                    $tripInstance->setChildVacancies(intval($trip['children']));
             
                     // Fetch company & port data from data base
-                    $tripExtraData = $trip->getTripsDataFromDatabase('BananaLines');
+                    $tripExtraData = $tripInstance->getTripsDataFromDatabase('BananaLines');
                     if($tripExtraData) {
-                        $trip->setCompanyName($tripExtraData['companyName']);
-                        $trip->setCompanyPrefix($tripExtraData['companyPrefix']);
-                        $trip->setPortOrigin($tripExtraData['portCodeOrigin']);
-                        $trip->setPortDestination($tripExtraData['portCodeDestination']);
+                        $tripInstance->setCompanyName($tripExtraData['companyName']);
+                        $tripInstance->setCompanyPrefix($tripExtraData['companyPrefix']);
+                        $tripInstance->setPortOrigin($tripExtraData['portCodeOrigin']);
+                        $tripInstance->setPortDestination($tripExtraData['portCodeDestination']);
                     }
 
-                    $response['data'][] = $trip;
+                    $response['data'][] = $tripInstance;
                 }
             } catch (RequestException | ClientException | ServerException $e) { // Transfering errors / 400 errors / 500 errors
                 return false;

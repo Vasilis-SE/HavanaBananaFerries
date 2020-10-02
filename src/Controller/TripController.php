@@ -66,15 +66,14 @@
                 $itinerariesResponse = array();
                 
                 foreach ($trips as $trip) {
-                    // echo $trip->getVesselName().'  |   ';
 
                     // TODO: Fill all the below empty fields.
                     $itinerariesResponse['itineraries'][] = array(
                         "itineraryId"=>$trip->getItinerary(),
-                        "originPortCode"=>"The unique identifier for a port",
-                        "destinationPortCode"=>"The unique identifier for a port",
-                        "operatorCode"=>"The unique identifier for an operator",
-                        "operatorName"=>"The name of the operator",
+                        "originPortCode"=>$trip->getPortOrigin(),
+                        "destinationPortCode"=>$trip->getPortDestination(),
+                        "operatorCode"=>$trip->getCompanyPrefix(),
+                        "operatorName"=>$trip->getCompanyName(),
                         "vesselName"=>$trip->getVesselName(),
                         "departureDateTime"=>$trip->getDepartureDate(),
                         "arrivalDateTime"=>$trip->getArrivalDate()
