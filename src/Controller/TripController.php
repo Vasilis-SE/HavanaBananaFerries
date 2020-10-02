@@ -66,8 +66,7 @@
                 $itinerariesResponse = array();
                 
                 foreach ($trips as $trip) {
-
-                    // TODO: Fill all the below empty fields.
+                    // Build final response for each trip
                     $itinerariesResponse['itineraries'][] = array(
                         "itineraryId"=>$trip->getItinerary(),
                         "originPortCode"=>$trip->getPortOrigin(),
@@ -79,17 +78,19 @@
                         "arrivalDateTime"=>$trip->getArrivalDate(),
                         "pricePerPassengerType"=>array(
                             array(
-                                "passengerType"=>"The unique identifier for a passenger type",
-                                "passengerPriceInCents"=>"Price in cents (numeric)"                           
+                                "passengerType"=>"AD",
+                                "passengerPriceInCents"=>$trip->getAdultPrice()                          
                             ),
                             array(
-                                "passengerType"=>"The unique identifier for a passenger type",
-                                "passengerPriceInCents"=>"Price in cents (numeric)"
+                                "passengerType"=>"CH",
+                                "passengerPriceInCents"=>$trip->getChildPrice()
+                            ),
+                            array(
+                                "passengerType"=>"IN",
+                                "passengerPriceInCents"=>$trip->getInfantPrice()
                             )
                         )
                     );
-
-                    
                 }
 
                 $response->setContent( json_encode($itinerariesResponse) );
