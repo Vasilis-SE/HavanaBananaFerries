@@ -1,0 +1,30 @@
+{
+    "HavanaFerries": {
+        "name": "Havana Ferries",
+        "code": "HVF",
+        "itinerariesInfo": {
+            "1": {
+                "portCodeOrigin": "RHD",
+                "portCodeDestination": "THS"
+            },
+            "2": {
+                "portCodeOrigin": "RHD",
+                "portCodeDestination": "NZY"
+            }
+        }
+    },
+    "BananaLines": {
+        "name": "Banana Lines",
+        "code": "BLS",
+        "itinerariesInfo": {
+            "1": {
+                "portCodeOrigin": "GFS",
+                "portCodeDestination": "TRQ"
+            },
+            "2": {
+                "portCodeOrigin": "GFS",
+                "portCodeDestination": "AZQ"
+            }
+        }
+    }
+}
