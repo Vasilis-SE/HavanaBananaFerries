@@ -41,15 +41,30 @@
                     $departureDate = substr($trip['date'], 0, 4).'-'.substr($trip['date'], 5, 2).'-'.substr($trip['date'], 7, 2).' '.$trip['departure'];
                     $arrivalDate = substr($trip['date'], 0, 4).'-'.substr($trip['date'], 5, 2).'-'.substr($trip['date'], 7, 2).' '.$trip['arrival'];
 
-                    $trip = new TripModel(
-                        intval($trip['itinerary']),
-                        htmlspecialchars($trip['vesselName']),
-                        $departureDate,
-                        $arrivalDate,
-                        $this->convertCentsToEuros($respBody['prices']['AD']),
-                        $this->convertCentsToEuros($respBody['prices']['CH']),
-                        $this->convertCentsToEuros($respBody['prices']['IN'])
-                    );
+                    $trip = new TripModel();
+                    $trip->setItinerary(intval($trip['itinerary']));
+                    $trip->setVesselName(htmlspecialchars($trip['vesselName']));
+                    $trip->setDepartureDate($departureDate);
+                    $trip->setArrivalDate($arrivalDate);
+                    $trip->setAdultPrice($this->convertCentsToEuros($respBody['prices']['AD']));
+                    $trip->setChildPrice($this->convertCentsToEuros($respBody['prices']['CH']));
+                    $trip->setInfantPrice($this->convertCentsToEuros($respBody['prices']['IN']));
+                   
+                    // Fetch company & port data from data base
+                    $trip->getTripsDataFromDatabase();
+
+
+                    $trip->setAdultVacancies($advc);
+                    $trip->setChildVacancies($chvc);
+                    $trip->setInfantVacancies($infvc);
+                    $trip->setCompanyName($com);
+                    $trip->setCompanyPrefix($cpref);
+                    $trip->setPortOrigin($por);
+                    $trip->setPortDestination($pdes);
+            
+        
+
+
 
                     $response['data'][] = $trip;
                 }

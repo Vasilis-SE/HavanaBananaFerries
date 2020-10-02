@@ -9,7 +9,7 @@
         private $_company;
         private $_companyPref;
         private $_portOrigin;
-        private $_portDestination
+        private $_portDestination;
 
 
         // Prices per type
@@ -22,7 +22,7 @@
         private $_childVacancies;
         private $_infantVacancies;
 
-        function __construct($it=0, $vsn="", $dep="", $arr="", $com="", $cpref="", $por="", $pdes="" 
+        function __construct($it=0, $vsn="", $dep="", $arr="", $com="", $cpref="", $por="", $pdes="",
             $adpr=0, $chpr=0, $infpr=0, $advc=INF, $chvc=INF, $infvc=INF) {
 
             $this->_itinerary = $it;
@@ -41,6 +41,27 @@
             $this->_adultVacancies = $advc;
             $this->_childVacancies = $chvc;
             $this->_infantVacancies = $infvc;
+        }
+
+        /**
+         * Function that fetches trips data from database such as the company name, prefix, port destination
+         * and the origin of the port.
+         * 
+         * @param String $companyKey The key name of the company.
+         * @return Array/Boolean It either returns an array response with the search criteria or false if something went wrong.
+         */
+        public function getTripsDataFromDatabase($companyKey = "") {
+            if(file_exists('../mocks/tripsDB.json')) {
+                $database = json_decode(file_get_contents('../mocks/tripsDB.json'), true);
+                return array(
+                    "companyName"=>$database[ $companyKey ]['name'],
+                    "companyPrefix"=>$database[ $companyKey ]['code'],
+                    "portCodeOrigin"=>$database[ $companyKey ]['itinerariesInfo'][$this->_itinerary]['portCodeOrigin'],
+                    "portCodeDestination"=>$database[ $companyKey ]['itinerariesInfo'][$this->_itinerary]['portCodeDestination']
+                );
+            } else {
+                return false;
+            }
         }
 
         // Getters / Setters
