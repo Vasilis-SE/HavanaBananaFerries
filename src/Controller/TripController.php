@@ -76,7 +76,17 @@
                         "operatorName"=>$trip->getCompanyName(),
                         "vesselName"=>$trip->getVesselName(),
                         "departureDateTime"=>$trip->getDepartureDate(),
-                        "arrivalDateTime"=>$trip->getArrivalDate()
+                        "arrivalDateTime"=>$trip->getArrivalDate(),
+                        "pricePerPassengerType"=>array(
+                            array(
+                                "passengerType"=>"The unique identifier for a passenger type",
+                                "passengerPriceInCents"=>"Price in cents (numeric)"                           
+                            ),
+                            array(
+                                "passengerType"=>"The unique identifier for a passenger type",
+                                "passengerPriceInCents"=>"Price in cents (numeric)"
+                            )
+                        )
                     );
 
                     

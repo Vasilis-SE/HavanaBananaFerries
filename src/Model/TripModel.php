@@ -13,8 +13,7 @@
         private $_portOrigin;
         private $_portDestination;
 
-
-        // Prices per type
+        // Prices per passenger type (cents)
         private $_adultPrice;
         private $_childPrice;
         private $_infantPrice;

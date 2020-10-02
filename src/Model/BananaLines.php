@@ -60,6 +60,22 @@
                         $tripInstance->setPortDestination($tripExtraData['portCodeDestination']);
                     }
 
+                    // Fetch prices per tripid and per passenger type
+                    $adultsPriceResp = $this->getPrices(array('tripId'=>$trip['tripId'], 'adults'=>1));
+                    if(isset($adultsPriceResp['totalPrice'])) {
+                        $adultPriceEUR = intval($adultsPriceResp['totalPrice']);
+                        $tripInstance->setAdultPrice($adultPriceEUR);
+
+                        // We use both adult param and children beacause the banana API does not allow for children to travel alone.
+                        $childrenPriceResp = $this->getPrices(array('tripId'=>$trip['tripId'], 'adults'=>1, 'children'=>1));
+                        if(isset($childrenPriceResp['totalPrice'])) {
+
+                            // By subtracting the price of the adults we can get the price of each individual child.
+                            $childPriceEUR = intval($childrenPriceResp['totalPrice']) - $adultPriceEUR;
+                            $tripInstance->setChildPrice($childPriceEUR);
+                        }
+                    }
+
                     $response['data'][] = $tripInstance;
                 }
             } catch (RequestException | ClientException | ServerException $e) { // Transfering errors / 400 errors / 500 errors
@@ -71,20 +87,13 @@
             return $response;
         }
 
-
-        // For prices
-        // https://fat3lw9sr6.execute-api.eu-west-3.amazonaws.com/prod/prices/banana?tripId=1&adults=2&children=1
-        // - tripId: The id of the trip you want to get prices for
-        // - adults: Number of adult passengers traveling
-        // - children: Number of children or infants traveling
-
-        public function getPrices() {
+        public function getPrices($params) {
             $response = array();
             $client = new Client();
             
             try { 
-                $havanaTripResp = $client->post($this->_baseUrl.'/prod/prices/banana');
-                $response = $havanaTripResp->getBody();
+                $pricingResponse = $client->get($this->_baseUrl.'/prod/prices/banana?'.http_build_query($params));
+                $response = $pricingResponse->getBody();
             } catch (RequestException | ClientException | ServerException $e) { // Transfering errors / 400 errors / 500 errors
                 return false;
             }

@@ -47,9 +47,9 @@
                     $tripInstance->setVesselName(htmlspecialchars($trip['vesselName']));
                     $tripInstance->setDepartureDate($departureDate);
                     $tripInstance->setArrivalDate($arrivalDate);
-                    $tripInstance->setAdultPrice($this->convertCentsToEuros($respBody['prices']['AD']));
-                    $tripInstance->setChildPrice($this->convertCentsToEuros($respBody['prices']['CH']));
-                    $tripInstance->setInfantPrice($this->convertCentsToEuros($respBody['prices']['IN']));
+                    $tripInstance->setAdultPrice(intval($respBody['prices']['AD']));
+                    $tripInstance->setChildPrice(intval($respBody['prices']['CH']));
+                    $tripInstance->setInfantPrice(intval($respBody['prices']['IN']));
                     
                     // Fetch company & port data from data base
                     $tripExtraData = $tripInstance->getTripsDataFromDatabase('HavanaFerries');
@@ -71,22 +71,10 @@
             return $response;
         }
 
-        private function convertCentsToEuros($value) {
-            return number_format((floatval($value) / 100), 2);
-        }
 
-        public function getPrices() {
-            $response = array();
-            $client = new Client();
-            
-            try { 
-                $havanaTripResp = $client->post($this->_baseUrl.'/prod/prices/havana');
-                $response = $havanaTripResp->getBody();
-            } catch (RequestException | ClientException | ServerException $e) { // Transfering errors / 400 errors / 500 errors
-                return false;
-            }
 
-            return $response;
+        public function getPrices($params) {
+        
         }
 
     }
