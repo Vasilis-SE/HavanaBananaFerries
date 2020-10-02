@@ -13,40 +13,6 @@
     class TripController {
 
         /**
-         * Its a test route
-         * @Route("/trips/havanaferries", name="havana_ferries_trips")
-         */
-        public function getHavanaFerriesTrips(Request $request) {
-            $havanaFerries = new HavanaFerries();
-            $tripsResponse = $havanaFerries->getTrips();
-
-            // die($tripsResponse['data'][0]->getVesselName());
-
-            $response = new Response();
-            $response->setContent( json_encode($tripsResponse) );
-            $response->headers->set('Content-Type', 'application/json');
-            $response->setStatusCode(Response::HTTP_OK);
-            return $response;
-        }
-
-        /**
-         * Its a test route
-         * @Route("/trips/bananalines", name="banana_lines_trips")
-         */
-        public function getBananaLinesTrips(Request $request) {
-            $bananaLines = new BananaLines();
-            $tripsResponse = $bananaLines->getTrips();
-
-            // die($tripsResponse['data'][0]->getVesselName());
-
-            $response = new Response();
-            $response->setContent( json_encode($tripsResponse) );
-            $response->headers->set('Content-Type', 'application/json');
-            $response->setStatusCode(Response::HTTP_OK);
-            return $response;
-        }
-
-        /**
          * Returns the list of all available itineraries from Havana Ferries and Banana Lines
          * @Route("/itineraries", name="itineraries_list")
          */
@@ -60,14 +26,14 @@
             $bananaLinesTrips = $bananaLines->getTrips();
             if($bananaLinesTrips['status']) $trips = array_merge($trips, $bananaLinesTrips['data']);
 
+            $response = new Response();
+            $data = array();
+
             // There are trip instances.
             if(!empty($trips)) {
-                $response = new Response();
-                $itinerariesResponse = array();
-                
                 foreach ($trips as $trip) {
                     // Build final response for each trip
-                    $itinerariesResponse['itineraries'][] = array(
+                    $data['itineraries'][] = array(
                         "itineraryId"=>$trip->getItinerary(),
                         "originPortCode"=>$trip->getPortOrigin(),
                         "destinationPortCode"=>$trip->getPortDestination(),
@@ -92,17 +58,14 @@
                         )
                     );
                 }
-
-                $response->setContent( json_encode($itinerariesResponse) );
-                $response->headers->set('Content-Type', 'application/json');
-                $response->setStatusCode(Response::HTTP_OK);
-                return $response;
             } else {
-                // TODO: throw error
+                $data = array('status'=>false, 'message'=>'There are no trips at the moment...');
             }
 
+            $response->setContent( json_encode($data) );
+            $response->headers->set('Content-Type', 'application/json');
+            $response->setStatusCode(Response::HTTP_OK);
+            return $response;
         }
-
-
-
+        
     }
