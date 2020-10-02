@@ -51,20 +51,13 @@
                     $trip->setInfantPrice($this->convertCentsToEuros($respBody['prices']['IN']));
                    
                     // Fetch company & port data from data base
-                    $trip->getTripsDataFromDatabase();
-
-
-                    $trip->setAdultVacancies($advc);
-                    $trip->setChildVacancies($chvc);
-                    $trip->setInfantVacancies($infvc);
-                    $trip->setCompanyName($com);
-                    $trip->setCompanyPrefix($cpref);
-                    $trip->setPortOrigin($por);
-                    $trip->setPortDestination($pdes);
-            
-        
-
-
+                    $tripExtraData = $trip->getTripsDataFromDatabase('HavanaFerries');
+                    if($tripExtraData) {
+                        $trip->setCompanyName($tripExtraData['companyName']);
+                        $trip->setCompanyPrefix($tripExtraData['companyPrefix']);
+                        $trip->setPortOrigin($tripExtraData['portCodeOrigin']);
+                        $trip->setPortDestination($tripExtraData['portCodeDestination']);
+                    }
 
                     $response['data'][] = $trip;
                 }
