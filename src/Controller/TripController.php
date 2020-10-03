@@ -78,6 +78,9 @@
          * @Route("/prices", name="itinerary_price")
          */
         public function getPrices(Request $request) {
+            // TODO: check the values of passengerType fields.
+
+            
             $allowed = array('itineraryId', 'operatorCode', 'expectedOverallPrice', 'pricePerPassenger', 'passengerId', 'passengerType');
             $reqData = json_decode($request->getContent(), true);
 
@@ -109,35 +112,86 @@
             }
 
             // Fetching request & sanitizing them.
-            $itineraryId = intval($reqData['itineraryId']);
-            $operatorCode = htmlspecialchars($reqData['operatorCode']);
+            $tmpTripsObj = new TripModel();
+            $tmpTripsObj->setItinerary(intval($reqData['itineraryId']));
+            $tmpTripsObj->setCompanyPrefix(htmlspecialchars($reqData['operatorCode']));
             $expectedOverallPrice = intval($reqData['expectedOverallPrice']);
             $pricePerPassenger = $reqData['pricePerPassenger'];
 
             // Fetch ferries company data from database to check the request search criteria
-            $tmpTripsObj = new TripModel();
-            $operatorData = $tmpTripsObj->getTripsDataFromDatabase( $operatorCode );
+            $operatorData = $tmpTripsObj->getTripsDataFromDatabase();
             if(!$operatorData) {
                 $response->setStatusCode(Response::HTTP_BAD_REQUEST);
                 $response->setContent( json_encode(array('status'=>false, 'errorCode'=>'TRIP_NOT_EXIST', 'errorDescription'=>'The requested trip does not exist...')) );
                 return $response;
             }
 
-            switch( $operatorCode ) {
+            switch( $tmpTripsObj->getCompanyPrefix() ) {
                 case "HVF": $operatorInst = new HavanaFerries(); break;
                 case "BLS": $operatorInst = new BananaLines(); break;   
             }
 
-            $companyTripsList = $operatorInst->getTrips();
+            // Fetch the specific trip from the operator.
+            $companyTripsList = $operatorInst->getTrips( $tmpTripsObj->getItinerary() );
             if(!$companyTripsList) {
                 $response->setStatusCode(Response::HTTP_NO_CONTENT);
                 $response->setContent( json_encode(array('status'=>false, 'errorCode'=>'NO_DATA', 'errorDescription'=>'Could not fetch trip data from operator...')) );
                 return $response;
             }
-            
-            
-            
 
+            // Iterate through pricePerPassenger and count their numbers to check the vacancies later, 
+            // make a total cost of all the tickets combined to check later with expectedOverallPrice
+            // build the pricePerPassenger portion of the response
+            $totalCost = 0;
+            $pppRespPortion = array();
+            $passengerCounters = array('AD'=>0, 'CH'=>0, 'IN'=>0);
+            foreach($pricePerPassenger as $ppp) {
+                switch($ppp['passengerType']) {
+                    case 'AD': 
+                        $passengerPrice = $companyTripsList['data'][0]->getAdultPrice();
+                    break;
+                    case 'CH': 
+                        $passengerPrice = $companyTripsList['data'][0]->getChildPrice();
+                    break;
+                    case 'IN': 
+                        $passengerPrice = $companyTripsList['data'][0]->getInfantPrice();
+                    break;
+                }
+
+                $totalCost += $passengerPrice;
+                $passengerCounters[ $ppp['passengerType'] ]++;
+                $pppRespPortion[] = array(
+                    'passengerId'=>intval($ppp['passengerId']),
+                    'passengerType'=>htmlspecialchars($ppp['passengerType']),
+                    'passengerPrice'=>$passengerPrice  
+                );
+            }
+
+            // Check if the expectedOverallPrice is different from the calculated one.
+            if($expectedOverallPrice != $totalCost) {
+                $response->setStatusCode(Response::HTTP_BAD_REQUEST);
+                $response->setContent( json_encode(array('status'=>false, 'errorCode'=>'DIF_IN_PRICE', 'errorDescription'=>'Expected total cost is different from the calculated one...')) );
+                return $response;
+            }
+
+            // Check if the number of passengers exceed the vacancies
+            if(
+                $passengerCounters['AD'] > $companyTripsList['data'][0]->getAdultVacancies() ||
+                $passengerCounters['CH'] > $companyTripsList['data'][0]->getChildVacancies() ||
+                $passengerCounters['IN'] > $companyTripsList['data'][0]->getInfantVacancies()
+            ) {
+                $response->setStatusCode(Response::HTTP_BAD_REQUEST);
+                $response->setContent( json_encode(array('status'=>false, 'errorCode'=>'EXCEED_VACAN', 'errorDescription'=>'The requested passenger number exceeds the vacancies limit...')) );
+                return $response;
+            }
+
+            // Finally everything is ok and need to send response.
+            $respData = array();
+            $respData['status'] = true;
+            $respData['pricePerPassenger'] = $pppRespPortion;
+            $response->setStatusCode(Response::HTTP_OK);
+            $response->setContent( json_encode( $respData ) );
+            return $response;
         }
         
     }
