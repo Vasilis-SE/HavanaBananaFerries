@@ -19,10 +19,13 @@
          */
         public function getItineraries(Request $request) {
             $trips = array();
+
+            // TODO: fix status check here, cause function returns false if error exists
             $havanaFerries = new HavanaFerries();
             $havanaFerriesTrips = $havanaFerries->getTrips();
             if($havanaFerriesTrips['status']) $trips = array_merge($trips, $havanaFerriesTrips['data']);
 
+            // TODO: fix status check here, cause function returns false if error exists
             $bananaLines = new BananaLines();
             $bananaLinesTrips = $bananaLines->getTrips();
             if($bananaLinesTrips['status']) $trips = array_merge($trips, $bananaLinesTrips['data']);
@@ -120,7 +123,20 @@
                 return $response;
             }
 
- 
+            switch( $operatorCode ) {
+                case "HVF": $operatorInst = new HavanaFerries(); break;
+                case "BLS": $operatorInst = new BananaLines(); break;   
+            }
+
+            $companyTripsList = $operatorInst->getTrips();
+            if(!$companyTripsList) {
+                $response->setStatusCode(Response::HTTP_NO_CONTENT);
+                $response->setContent( json_encode(array('status'=>false, 'errorCode'=>'NO_DATA', 'errorDescription'=>'Could not fetch trip data from operator...')) );
+                return $response;
+            }
+            
+            
+            
 
         }
         

@@ -21,9 +21,9 @@
             $this->_baseUrl = "https://fat3lw9sr6.execute-api.eu-west-3.amazonaws.com";
         }
 
-        public function convertToCents($val) {}
+        public function convertToCents($val) { return $val; }
 
-        public function getTrips() {
+        public function getTrips($tripID=0) {
             $response = array();
             $client = new Client();
            
@@ -41,6 +41,8 @@
                 $respBody = json_decode((string) $havanaTripResp->getBody(), true);
                 
                 foreach ($respBody['trips'] as $trip) {
+                    if($tripID != 0 && $tripID != intval($trip['itinerary'])) continue; 
+
                     $departureDate = substr($trip['date'], 0, 4).'-'.substr($trip['date'], 5, 2).'-'.substr($trip['date'], 7, 2).' '.$trip['departure'];
                     $arrivalDate = substr($trip['date'], 0, 4).'-'.substr($trip['date'], 5, 2).'-'.substr($trip['date'], 7, 2).' '.$trip['arrival'];
 
@@ -73,10 +75,5 @@
             return $response;
         }
 
-
-
-        public function getPrices($params) {
-        
-        }
-
+        public function getPrices($params) {}
     }

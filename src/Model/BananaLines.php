@@ -25,7 +25,7 @@
             return $val * 100;
         }
 
-        public function getTrips() {
+        public function getTrips($tripID = 0) {
             $response = array();
             $client = new Client();
             
@@ -42,6 +42,8 @@
                 // Iterate response and convert it to trip class instances
                 $respBody = json_decode((string) $bananaTripResp->getBody(), true);
                 foreach ($respBody as $trip) {
+                    if($tripID != 0 && $tripID != intval($trip['itinerary'])) continue; 
+
                     $departureDate = htmlspecialchars($trip['date']).' '.htmlspecialchars($trip['departsAt']);
 
                     // The arrival date is the departure plus whatever the duration is.
