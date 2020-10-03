@@ -26,8 +26,9 @@
             $bananaLinesTrips = $bananaLines->getTrips();
             if($bananaLinesTrips['status']) $trips = array_merge($trips, $bananaLinesTrips['data']);
 
-            $response = new Response();
             $data = array();
+            $response = new Response();
+            $response->headers->set('Content-Type', 'application/json');
 
             // There are trip instances.
             if(!empty($trips)) {
@@ -58,14 +59,23 @@
                         )
                     );
                 }
+
+                $response->setStatusCode(Response::HTTP_OK);
             } else {
                 $data = array('status'=>false, 'message'=>'There are no trips at the moment...');
+                $response->setStatusCode(Response::HTTP_NO_CONTENT);
             }
 
-            $response->setContent( json_encode($data) );
-            $response->headers->set('Content-Type', 'application/json');
-            $response->setStatusCode(Response::HTTP_OK);
+            $response->setContent( json_encode($data) );     
             return $response;
+        }
+
+        /**
+         * @Route("/prices", name="itinerary_price")
+         */
+        public function getPrices(Request $request) {
+            $reqData = json_decode($request->getContent(), true);
+            die($reqData['itineraryId']);
         }
         
     }
