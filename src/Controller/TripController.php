@@ -9,6 +9,7 @@
 
     use App\Model\HavanaFerries;
     use App\Model\BananaLines;
+    use App\Model\TripModel;
 
     class TripController {
 
@@ -30,42 +31,42 @@
             $response = new Response();
             $response->headers->set('Content-Type', 'application/json');
 
-            // There are trip instances.
-            if(!empty($trips)) {
-                foreach ($trips as $trip) {
-                    // Build final response for each trip
-                    $data['itineraries'][] = array(
-                        "itineraryId"=>$trip->getItinerary(),
-                        "originPortCode"=>$trip->getPortOrigin(),
-                        "destinationPortCode"=>$trip->getPortDestination(),
-                        "operatorCode"=>$trip->getCompanyPrefix(),
-                        "operatorName"=>$trip->getCompanyName(),
-                        "vesselName"=>$trip->getVesselName(),
-                        "departureDateTime"=>$trip->getDepartureDate(),
-                        "arrivalDateTime"=>$trip->getArrivalDate(),
-                        "pricePerPassengerType"=>array(
-                            array(
-                                "passengerType"=>"AD",
-                                "passengerPriceInCents"=>$trip->getAdultPrice()                          
-                            ),
-                            array(
-                                "passengerType"=>"CH",
-                                "passengerPriceInCents"=>$trip->getChildPrice()
-                            ),
-                            array(
-                                "passengerType"=>"IN",
-                                "passengerPriceInCents"=>$trip->getInfantPrice()
-                            )
-                        )
-                    );
-                }
-
-                $response->setStatusCode(Response::HTTP_OK);
-            } else {
-                $data = array('status'=>false, 'message'=>'There are no trips at the moment...');
+            // Check if the array that containts the trip instances is empty
+            if(empty($trips)) {
                 $response->setStatusCode(Response::HTTP_NO_CONTENT);
+                $response->setContent( json_encode(array('status'=>false, 'message'=>'There are no trips at the moment...')) );     
+                return $response;
+            }
+            
+            foreach ($trips as $trip) {
+                // Build final response for each trip
+                $data['itineraries'][] = array(
+                    "itineraryId"=>$trip->getItinerary(),
+                    "originPortCode"=>$trip->getPortOrigin(),
+                    "destinationPortCode"=>$trip->getPortDestination(),
+                    "operatorCode"=>$trip->getCompanyPrefix(),
+                    "operatorName"=>$trip->getCompanyName(),
+                    "vesselName"=>$trip->getVesselName(),
+                    "departureDateTime"=>$trip->getDepartureDate(),
+                    "arrivalDateTime"=>$trip->getArrivalDate(),
+                    "pricePerPassengerType"=>array(
+                        array(
+                            "passengerType"=>"AD",
+                            "passengerPriceInCents"=>$trip->getAdultPrice()                          
+                        ),
+                        array(
+                            "passengerType"=>"CH",
+                            "passengerPriceInCents"=>$trip->getChildPrice()
+                        ),
+                        array(
+                            "passengerType"=>"IN",
+                            "passengerPriceInCents"=>$trip->getInfantPrice()
+                        )
+                    )
+                );
             }
 
+            $response->setStatusCode(Response::HTTP_OK);
             $response->setContent( json_encode($data) );     
             return $response;
         }
@@ -75,7 +76,24 @@
          */
         public function getPrices(Request $request) {
             $reqData = json_decode($request->getContent(), true);
-            die($reqData['itineraryId']);
+
+            $response = new Response();
+            $response->headers->set('Content-Type', 'application/json');
+
+            // Check if the request is empty.
+            if($reqData == null || empty($reqData)) {
+                $response->setStatusCode(Response::HTTP_BAD_REQUEST);
+                $response->setContent( json_encode(array('status'=>false, 'message'=>'There are no data on the request...')) );
+                return $response;
+            }
+
+
+
+
+
+
+
+
         }
         
     }

@@ -56,7 +56,7 @@
                     $tripInstance->setChildVacancies(intval($trip['children']));
             
                     // Fetch company & port data from data base
-                    $tripExtraData = $tripInstance->getTripsDataFromDatabase('BananaLines');
+                    $tripExtraData = $tripInstance->getTripsDataFromDatabase('BLS');
                     if($tripExtraData) {
                         $tripInstance->setCompanyName($tripExtraData['companyName']);
                         $tripInstance->setCompanyPrefix($tripExtraData['companyPrefix']);

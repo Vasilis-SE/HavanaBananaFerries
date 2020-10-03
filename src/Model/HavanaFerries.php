@@ -54,7 +54,7 @@
                     $tripInstance->setInfantPrice(intval($respBody['prices']['IN']));
                     
                     // Fetch company & port data from data base
-                    $tripExtraData = $tripInstance->getTripsDataFromDatabase('HavanaFerries');
+                    $tripExtraData = $tripInstance->getTripsDataFromDatabase('HVF');
                     if($tripExtraData) {
                         $tripInstance->setCompanyName($tripExtraData['companyName']);
                         $tripInstance->setCompanyPrefix($tripExtraData['companyPrefix']);
