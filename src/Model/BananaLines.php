@@ -18,7 +18,7 @@
         private $_baseUrl;
 
         function __construct() {
-            $this->_baseUrl = "https://fat3lw9sr6.execute-api.eu-west-3.amazonaws.com";
+            $this->_baseUrl = $_ENV['BANANA_LINES_BASE_URL'];;
         }
 
         public function convertToCents($val) {
