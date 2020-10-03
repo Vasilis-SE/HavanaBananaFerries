@@ -78,10 +78,9 @@
          * @Route("/prices", name="itinerary_price")
          */
         public function getPrices(Request $request) {
-            // TODO: check the values of passengerType fields.
-
-            
             $allowed = array('itineraryId', 'operatorCode', 'expectedOverallPrice', 'pricePerPassenger', 'passengerId', 'passengerType');
+            $allowedPassTypes = array('AD', 'CH', 'IN');
+
             $reqData = json_decode($request->getContent(), true);
 
             $response = new Response();
@@ -108,6 +107,22 @@
             if(!$flag) {
                 $response->setStatusCode(Response::HTTP_BAD_REQUEST);
                 $response->setContent( json_encode(array('status'=>false, 'errorCode'=>'MISS_REQ_DATA', 'errorDescription'=>'Missing important request data from post...')) );
+                return $response;
+            }
+
+            // Check if request passenger types are correct
+            $flag = true;
+            $passTypesList = array_column($reqData['pricePerPassenger'], 'passengerType');
+            foreach($allowedPassTypes as $allowedType) {
+                if(!in_array($allowedType, $passTypesList)) {
+                    $flag = false;
+                    break;
+                }
+            }
+
+            if(!$flag) {
+                $response->setStatusCode(Response::HTTP_BAD_REQUEST);
+                $response->setContent( json_encode(array('status'=>false, 'errorCode'=>'WRONG_PASS_TYPE', 'errorDescription'=>'One or more passengers in the request has invalid type...')) );
                 return $response;
             }
 
