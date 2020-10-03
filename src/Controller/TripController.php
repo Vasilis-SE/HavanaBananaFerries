@@ -34,7 +34,7 @@
             // Check if the array that containts the trip instances is empty
             if(empty($trips)) {
                 $response->setStatusCode(Response::HTTP_NO_CONTENT);
-                $response->setContent( json_encode(array('status'=>false, 'message'=>'There are no trips at the moment...')) );     
+                $response->setContent( json_encode(array('status'=>false, 'errorCode'=>'NO_DATA', 'errorDescription'=>'There are no trips at the moment...')) );     
                 return $response;
             }
             
@@ -105,10 +105,22 @@
                 return $response;
             }
 
+            // Fetching request & sanitizing them.
+            $itineraryId = intval($reqData['itineraryId']);
+            $operatorCode = htmlspecialchars($reqData['operatorCode']);
+            $expectedOverallPrice = intval($reqData['expectedOverallPrice']);
+            $pricePerPassenger = $reqData['pricePerPassenger'];
 
+            // Fetch ferries company data from database to check the request search criteria
+            $tmpTripsObj = new TripModel();
+            $operatorData = $tmpTripsObj->getTripsDataFromDatabase( $operatorCode );
+            if(!$operatorData) {
+                $response->setStatusCode(Response::HTTP_BAD_REQUEST);
+                $response->setContent( json_encode(array('status'=>false, 'errorCode'=>'TRIP_NOT_EXIST', 'errorDescription'=>'The requested trip does not exist...')) );
+                return $response;
+            }
 
-
-
+ 
 
         }
         

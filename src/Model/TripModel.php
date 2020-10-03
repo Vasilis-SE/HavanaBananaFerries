@@ -48,21 +48,24 @@
          * Function that fetches trips data from database such as the company name, prefix, port destination
          * and the origin of the port.
          * 
-         * @param String $companyKey The key name of the company.
          * @return Array/Boolean It either returns an array response with the search criteria or false if something went wrong.
          */
-        public function getTripsDataFromDatabase($companyKey = "") {
-            if(file_exists(dirname(__DIR__, 1).'/mocks/tripsDB.json')) {
-                $database = json_decode(file_get_contents(dirname(__DIR__, 1).'/mocks/tripsDB.json'), true);
-                return array(
-                    "companyName"=>$database[ $companyKey ]['name'],
-                    "companyPrefix"=>$database[ $companyKey ]['code'],
-                    "portCodeOrigin"=>$database[ $companyKey ]['itinerariesInfo'][$this->_itinerary]['portCodeOrigin'],
-                    "portCodeDestination"=>$database[ $companyKey ]['itinerariesInfo'][$this->_itinerary]['portCodeDestination']
-                );
-            } else {
-                return false;
-            }
+        public function getTripsDataFromDatabase() {
+            // If database exists check
+            if(!file_exists(dirname(__DIR__, 1).'/mocks/tripsDB.json')) return false;
+
+            // If company info exist on database
+            $database = json_decode(file_get_contents(dirname(__DIR__, 1).'/mocks/tripsDB.json'), true);
+            if(!isset( $database[ $this->_companyPref ] )) return false;
+
+            // If company has the requested trip
+            if(!isset( $database[ $this->_companyPref ]['itinerariesInfo'][ $this->_itinerary ] )) return false;
+               
+            return array(
+                "companyName"=>$database[ $this->_companyPref ]['name'],
+                "portCodeOrigin"=>$database[ $this->_companyPref ]['itinerariesInfo'][$this->_itinerary]['portCodeOrigin'],
+                "portCodeDestination"=>$database[ $this->_companyPref ]['itinerariesInfo'][$this->_itinerary]['portCodeDestination']
+            );
         }
 
         // Getters / Setters

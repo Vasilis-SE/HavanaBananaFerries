@@ -52,12 +52,12 @@
                     $tripInstance->setAdultPrice(intval($respBody['prices']['AD']));
                     $tripInstance->setChildPrice(intval($respBody['prices']['CH']));
                     $tripInstance->setInfantPrice(intval($respBody['prices']['IN']));
+                    $tripInstance->setCompanyPrefix('HVF');
                     
                     // Fetch company & port data from data base
-                    $tripExtraData = $tripInstance->getTripsDataFromDatabase('HVF');
+                    $tripExtraData = $tripInstance->getTripsDataFromDatabase();
                     if($tripExtraData) {
                         $tripInstance->setCompanyName($tripExtraData['companyName']);
-                        $tripInstance->setCompanyPrefix($tripExtraData['companyPrefix']);
                         $tripInstance->setPortOrigin($tripExtraData['portCodeOrigin']);
                         $tripInstance->setPortDestination($tripExtraData['portCodeDestination']);
                     }

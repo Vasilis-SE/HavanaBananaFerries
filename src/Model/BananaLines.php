@@ -54,12 +54,12 @@
                     $tripInstance->setArrivalDate($arrivalDate);
                     $tripInstance->setAdultVacancies(intval($trip['adults']));
                     $tripInstance->setChildVacancies(intval($trip['children']));
+                    $tripInstance->setCompanyPrefix('BLS');
             
                     // Fetch company & port data from data base
-                    $tripExtraData = $tripInstance->getTripsDataFromDatabase('BLS');
+                    $tripExtraData = $tripInstance->getTripsDataFromDatabase();
                     if($tripExtraData) {
                         $tripInstance->setCompanyName($tripExtraData['companyName']);
-                        $tripInstance->setCompanyPrefix($tripExtraData['companyPrefix']);
                         $tripInstance->setPortOrigin($tripExtraData['portCodeOrigin']);
                         $tripInstance->setPortDestination($tripExtraData['portCodeDestination']);
                     }
