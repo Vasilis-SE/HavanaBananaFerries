@@ -75,6 +75,7 @@
          * @Route("/prices", name="itinerary_price")
          */
         public function getPrices(Request $request) {
+            $allowed = array('itineraryId', 'operatorCode', 'expectedOverallPrice', 'pricePerPassenger', 'passengerId', 'passengerType');
             $reqData = json_decode($request->getContent(), true);
 
             $response = new Response();
@@ -83,11 +84,26 @@
             // Check if the request is empty.
             if($reqData == null || empty($reqData)) {
                 $response->setStatusCode(Response::HTTP_BAD_REQUEST);
-                $response->setContent( json_encode(array('status'=>false, 'message'=>'There are no data on the request...')) );
+                $response->setContent( json_encode(array('status'=>false, 'errorCode'=>'EMPTY_REQ', 'errorDescription'=>'There are no data on the request...')) );
                 return $response;
             }
 
+            // Check if the request body contains contains all the necessary fields.
+            $flag = true;
+            $fieldsList = array_keys($reqData);
+            if(isset($reqData['pricePerPassenger'])) $fieldsList = array_merge($fieldsList, array_keys($reqData['pricePerPassenger']));
+            foreach($allowed as $allowedKey) {
+                if(!in_array($allowedKey, $fieldsList)) {
+                    $flag = false;
+                    break;
+                }
+            }
 
+            if(!$flag) {
+                $response->setStatusCode(Response::HTTP_BAD_REQUEST);
+                $response->setContent( json_encode(array('status'=>false, 'errorCode'=>'MISS_REQ_DATA', 'errorDescription'=>'Missing important request data from post...')) );
+                return $response;
+            }
 
 
 
