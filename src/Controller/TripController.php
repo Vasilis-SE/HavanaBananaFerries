@@ -20,15 +20,13 @@
         public function getItineraries(Request $request) {
             $trips = array();
 
-            // TODO: fix status check here, cause function returns false if error exists
             $havanaFerries = new HavanaFerries();
             $havanaFerriesTrips = $havanaFerries->getTrips();
-            if($havanaFerriesTrips['status']) $trips = array_merge($trips, $havanaFerriesTrips['data']);
+            if($havanaFerriesTrips) $trips = array_merge($trips, $havanaFerriesTrips['data']);
 
-            // TODO: fix status check here, cause function returns false if error exists
             $bananaLines = new BananaLines();
             $bananaLinesTrips = $bananaLines->getTrips();
-            if($bananaLinesTrips['status']) $trips = array_merge($trips, $bananaLinesTrips['data']);
+            if($bananaLinesTrips) $trips = array_merge($trips, $bananaLinesTrips['data']);
 
             $data = array();
             $response = new Response();
@@ -96,9 +94,11 @@
             // Check if the request body contains contains all the necessary fields.
             $flag = true;
             $fieldsList = array_keys($reqData);
-            if(isset($reqData['pricePerPassenger'])) $fieldsList = array_merge($fieldsList, array_keys($reqData['pricePerPassenger']));
-            foreach($allowed as $allowedKey) {
-                if(!in_array($allowedKey, $fieldsList)) {
+            if(isset($reqData['pricePerPassenger']) && !empty($reqData['pricePerPassenger'])) 
+                $fieldsList = array_merge($fieldsList, array_keys($reqData['pricePerPassenger'][0]));
+
+            foreach($allowed as $key) {
+                if(!in_array($key, $fieldsList)) {
                     $flag = false;
                     break;
                 }
@@ -112,9 +112,9 @@
 
             // Check if request passenger types are correct
             $flag = true;
-            $passTypesList = array_column($reqData['pricePerPassenger'], 'passengerType');
-            foreach($allowedPassTypes as $allowedType) {
-                if(!in_array($allowedType, $passTypesList)) {
+            $passTypesList = array_unique(array_column($reqData['pricePerPassenger'], 'passengerType'));
+            foreach($passTypesList as $type) {
+                if(!in_array($type, $allowedPassTypes)) {
                     $flag = false;
                     break;
                 }
