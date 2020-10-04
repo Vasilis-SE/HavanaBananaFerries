@@ -33,4 +33,13 @@
             $this->assertNotEmpty($data, "Ferrie company data not empty");
         }
 
+        public function testItineraryDatabaseExists() {
+            $this->assertFileExists(dirname(__DIR__, 2).'/src/mocks/tripsDB.json');
+        }
+
+        public function testItineraryDatabaseIsReadable() {
+            $this->assertFileIsReadable(dirname(__DIR__, 2).'/src/mocks/tripsDB.json');
+        }
+
+
     }

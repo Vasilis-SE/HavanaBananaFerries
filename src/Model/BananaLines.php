@@ -98,7 +98,9 @@
             try { 
                 $pricingResponse = $client->get($this->_baseUrl.'/prod/prices/banana?'.http_build_query($params));
                 $response = json_decode((string) $pricingResponse->getBody(), true);
-            } catch (RequestException | ClientException | ServerException $e) { // Transfering errors / 400 errors / 500 errors
+            } catch (ConnectException | RequestException | ClientException | ServerException $e) { // Transfer / Connection errors
+                return false;
+            } catch (ParseException $e) { // Exception that can occure while parsing response from request.
                 return false;
             }
 
