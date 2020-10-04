@@ -7,6 +7,7 @@
     use GuzzleHttp\Exception\RequestException;
     use GuzzleHttp\Exception\ClientException;
     use GuzzleHttp\Exception\ServerException;
+    use GuzzleHttp\Exception\ConnectException;
 
     // Parsing response exceptions
     use GuzzleHttp\Exception\ParseException;
@@ -18,7 +19,7 @@
         private $_baseUrl;
 
         function __construct() {
-            $this->_baseUrl = $_ENV['BANANA_LINES_BASE_URL'];;
+            $this->_baseUrl = $_ENV['BANANA_LINES_BASE_URL'];
         }
 
         // API integrations
@@ -81,7 +82,7 @@
 
                     $response['data'][] = $tripInstance;
                 }
-            } catch (RequestException | ClientException | ServerException $e) { // Transfering errors / 400 errors / 500 errors
+            } catch (ConnectException | RequestException | ClientException | ServerException $e) { // Transfer / Connection errors
                 return false;
             } catch (ParseException $e) { // Exception that can occure while parsing response from request.
                 return false;
