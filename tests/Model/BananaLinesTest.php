@@ -71,4 +71,41 @@
             $this->assertEquals(600, $bananaLines->convertToCents(6));
         }
 
+        public function testGetPricesSuccessfully() {
+            $bananaLines = new BananaLines();
+            $params = array(
+                'tripId'=>2,
+                'adults'=>1,
+                'children'=>1
+            );
+            $response = $bananaLines->getPrices($params);
+
+            $this->assertIsArray($response);
+            $this->assertNotEmpty($response);
+        }
+
+        public function testPricesWrongTripID() {
+            $bananaLines = new BananaLines();
+            $params = array(
+                'tripId'=>4873298472398,
+                'adults'=>1,
+                'children'=>1
+            );
+            $response = $bananaLines->getPrices($params);
+
+            $this->assertFalse($response);
+        }
+
+        public function testPricesPassengerNumberExceedVacancies() {
+            $bananaLines = new BananaLines();
+            $params = array(
+                'tripId'=>1,
+                'adults'=>4,
+                'children'=>3
+            );
+            $response = $bananaLines->getPrices($params);
+
+            $this->assertFalse($response);
+        }
+
     }

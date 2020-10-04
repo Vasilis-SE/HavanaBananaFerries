@@ -12,6 +12,22 @@
     use App\Model\TripModel;
 
     class TripController {
+        /**
+         * This is a test route
+         * @Route("/prices/bananalines", name="banana_prices")
+         */
+        public function getBananaLinesPrices(Request $request) {
+            $params = json_decode($request->getContent(), true);
+
+            $bananaLines = new BananaLines();
+            $data = $bananaLines->getPrices( $params );
+            
+            $response = new Response();
+            $response->headers->set('Content-Type', 'application/json');
+            $response->setStatusCode(Response::HTTP_OK);
+            $response->setContent( json_encode($data) );     
+            return $response;        
+        }
 
         /**
          * Returns the list of all available itineraries from Havana Ferries and Banana Lines
@@ -73,6 +89,7 @@
         }
 
         /**
+         * Route function that returns the prices grouped by the passenger types.
          * @Route("/prices", name="itinerary_price")
          */
         public function getPrices(Request $request) {
