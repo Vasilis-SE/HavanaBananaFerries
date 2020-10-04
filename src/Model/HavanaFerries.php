@@ -43,14 +43,14 @@
                 foreach ($respBody['trips'] as $trip) {
                     if($tripID != 0 && $tripID != intval($trip['itinerary'])) continue; 
 
-                    $departureDate = substr($trip['date'], 0, 4).'-'.substr($trip['date'], 5, 2).'-'.substr($trip['date'], 7, 2).' '.$trip['departure'];
-                    $arrivalDate = substr($trip['date'], 0, 4).'-'.substr($trip['date'], 5, 2).'-'.substr($trip['date'], 7, 2).' '.$trip['arrival'];
+                    $departureDate = substr($trip['date'], 0, 4).'-'.substr($trip['date'], 4, 2).'-'.substr($trip['date'], 6, 2).' '.$trip['departure'];
+                    $arrivalDate = substr($trip['date'], 0, 4).'-'.substr($trip['date'], 4, 2).'-'.substr($trip['date'], 6, 2).' '.$trip['arrival'];
 
                     $tripInstance = new TripModel();
                     $tripInstance->setItinerary(intval($trip['itinerary']));
                     $tripInstance->setVesselName(htmlspecialchars($trip['vesselName']));
-                    $tripInstance->setDepartureDate($departureDate);
-                    $tripInstance->setArrivalDate($arrivalDate);
+                    $tripInstance->setDepartureDate( $this->convertToUTC("Y-m-d H:i", strtotime($departureDate)) );
+                    $tripInstance->setArrivalDate( $this->convertToUTC("Y-m-d H:i", strtotime($arrivalDate)) );
                     $tripInstance->setAdultPrice(intval($respBody['prices']['AD']));
                     $tripInstance->setChildPrice(intval($respBody['prices']['CH']));
                     $tripInstance->setInfantPrice(intval($respBody['prices']['IN']));
@@ -79,6 +79,14 @@
 
         // General functions 
         public function convertToCents($val) { return $val; }
+
+        public function convertToUTC($format, $timestamp) {
+            $initTMZ = date_default_timezone_get();
+            date_default_timezone_set("UTC");
+            $utcDateTime = date($format, $timestamp);
+            date_default_timezone_set( $initTMZ );
+            return $utcDateTime;
+        }
 
         // Getters / Setters
         public function getBaseURL() { return $this->_baseUrl; }

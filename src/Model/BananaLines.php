@@ -50,8 +50,8 @@
                     $tripInstance = new TripModel();
                     $tripInstance->setItinerary(intval($trip['tripId']));
                     $tripInstance->setVesselName(htmlspecialchars($trip['vessel']));
-                    $tripInstance->setDepartureDate($departureDate);
-                    $tripInstance->setArrivalDate($arrivalDate);
+                    $tripInstance->setDepartureDate( $this->convertToUTC("Y-m-d H:i", strtotime($departureDate)) );
+                    $tripInstance->setArrivalDate( $this->convertToUTC("Y-m-d H:i", strtotime($arrivalDate)) );
                     $tripInstance->setAdultVacancies(intval($trip['adults']));
                     $tripInstance->setChildVacancies(intval($trip['children']));
                     $tripInstance->setCompanyPrefix('BLS');
@@ -110,6 +110,14 @@
         // General functions 
         public function convertToCents($val) {
             return $val * 100;
+        }
+
+        public function convertToUTC($format, $timestamp) {
+            $initTMZ = date_default_timezone_get();
+            date_default_timezone_set("UTC");
+            $utcDateTime = date($format, $timestamp);
+            date_default_timezone_set( $initTMZ );
+            return $utcDateTime;
         }
 
         // Getters / Setters
