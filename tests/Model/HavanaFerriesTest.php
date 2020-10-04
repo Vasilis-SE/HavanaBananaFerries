@@ -13,4 +13,10 @@
             $this->assertEquals(true, ($response['status'] && count($response['data']) > 0) );
         }
 
+        // public function testHavanaURLIsCorrect() {
+        //     $havanaFerries = new HavanaFerries();
+        //     die($havanaFerries->_baseUrl);
+        //     $this->assertEquals(true, ($response['status'] && count($response['data']) > 0) );
+        // }
+
     }

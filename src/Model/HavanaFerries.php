@@ -21,8 +21,7 @@
             $this->_baseUrl = $_ENV['HAVANA_FERRIES_BASE_URL'];
         }
 
-        public function convertToCents($val) { return $val; }
-
+        // API integrations
         public function getTrips($tripID=0) {
             $response = array();
             $client = new Client();
@@ -76,4 +75,11 @@
         }
 
         public function getPrices($params) {}
+
+        // General functions 
+        public function convertToCents($val) { return $val; }
+
+        // Getters / Setters
+        public function getBaseURL() { return $this->_baseUrl; }
+        public function setBaseURL($url) { $this->_baseUrl = $url; }
     }

@@ -21,10 +21,7 @@
             $this->_baseUrl = $_ENV['BANANA_LINES_BASE_URL'];;
         }
 
-        public function convertToCents($val) {
-            return $val * 100;
-        }
-
+        // API integrations
         public function getTrips($tripID = 0) {
             $response = array();
             $client = new Client();
@@ -106,5 +103,14 @@
 
             return $response;
         }
+
+        // General functions 
+        public function convertToCents($val) {
+            return $val * 100;
+        }
+
+        // Getters / Setters
+        public function getBaseURL() { return $this->_baseUrl; }
+        public function setBaseURL($url) { $this->_baseUrl = $url; }
 
     }
