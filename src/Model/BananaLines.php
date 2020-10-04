@@ -40,7 +40,7 @@
                 // Iterate response and convert it to trip class instances
                 $respBody = json_decode((string) $bananaTripResp->getBody(), true);
                 foreach ($respBody as $trip) {
-                    if($tripID != 0 && $tripID != intval($trip['itinerary'])) continue; 
+                    if($tripID != 0 && $tripID != intval($trip['tripId'])) continue; 
 
                     $departureDate = htmlspecialchars($trip['date']).' '.htmlspecialchars($trip['departsAt']);
 
