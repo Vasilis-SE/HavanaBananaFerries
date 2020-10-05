@@ -176,3 +176,13 @@ URL: http://127.0.0.1:8000/prices
     ]
 }
 </code></pre>
+
+## Future changes & acknowledgments 
+
+<ul>
+    <li> The .env files sould <b><u> ALWAYS </u></b> be on .gitignore (because there are sensitive data). </li>
+    <li> The trips data could be inserted in a real database. </li>
+    <li> It would be great for the trips data to be cached on a memory based NoSQL database such as <b>Redis</b> or <b>Memcache</b> and not be fetched from the database or directly from the providers API everytime a user wants to </li>
+    <li> The OOP side of the code could be broken down more. For example we could use a passenger class to identify passengers and their type </li>
+    <li> More in depth unit testing </li>
+</ul>
